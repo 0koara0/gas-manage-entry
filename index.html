@@ -22,7 +22,7 @@
       var cnt = 0;
       
       //回答者が0なら誰も回答してないよ表示
-      if(lastrow => 1){
+      if(lastrow <= 1){
         output.append('<h2>まだ誰も回答していません</h2>');
       }else{//以下で参加者カウント
         for(var i=0;i<rangeAns.length;i++){
