@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+  
+    <ul>
+      <?
+      //ここからGASのコード
+      //スプレッドシートからつくっているので,連携元をこれで引っ張ってきている
+      var sheet = SpreadsheetApp.getActiveSheet();
+      //スプレッドシートに何行書き込まれているか取得
+      var lastrow = sheet.getLastRow();
+      //以下３行で名前とTwi垢と回答内容をGAS側に取り込む（一々スプレッドシートを参照していると重い）
+      //sheet.getSheetValues(始めの行（横）, 始めの列（縦）, +何行, +何列)
+      //sheet.getSheetValues(2,3,3,4);だと2C~4Fまでが2次元配列に入るたぶん
+      var rangeName = sheet.getSheetValues(2, 3, lastrow-1, 1);
+      var rangeTwi  = sheet.getSheetValues(2, 4, lastrow-1, 1);
+      var rangeAns  = sheet.getSheetValues(2, 5, lastrow-1, 1);
+      //参加者カウント用
+      var cnt = 0;
+      
+      //回答者が0なら誰も回答してないよ表示
+      if(lastrow => 1){
+        output.append('<h2>まだ誰も回答していません</h2>');
+      }else{//以下で参加者カウント
+        for(var i=0;i<rangeAns.length;i++){
+          if(rangeAns[i]=='Yes'){
+            cnt++;
+          }
+        }
+        //上でカウントした参加者の数を表示
+        output.append('<h2>参加者 : '+ cnt +'人</h2>');
+        
+        //参加する人を表示する部分
+        for(var i=0;i<rangeAns.length;i++){
+          if(rangeAns[i]=='Yes'){//参加表明をしていて
+            if(rangeName != ''){//かつハンドルネームが空白でないなら
+              output.append(rangeName[i]);//表示
+              if(rangeTwi[i] != ''){//TwitterIDが空白じゃないなら
+                output.append(' (<a href="https://twitter.com/'+ rangeTwi[i] +'?lang=ja" target="_blank">'+rangeTwi[i]+'</a>)</br>');//TwitterIDも表示
+              }
+            }
+          }
+        }
+      }
+      //ここまでGASのコード
+      ?>
+    </ul>
+  </body>
+</html>
